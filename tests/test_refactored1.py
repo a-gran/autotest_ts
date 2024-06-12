@@ -2,13 +2,11 @@
 Basic test
 '''
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
-from time import sleep
-
-#from config.settings import URL
-URL = "https://sbis.ru/"
+from main_sbis_page import MainSbisPage
+from contacts_sbis_page import ContactsSbisPage
+from tensor_main_page import TensorMainPage
+from tensor_about_page import TensorAboutPage
+from settings import URL_SBIS
 
 def _switch_to_another_handler(browser, original_page_handler):
     for window_handle in browser.window_handles:
@@ -32,37 +30,42 @@ def _is_correct_width_height(images_list):
         return 'Одинаковая высота и ширина'
     return 'Разные размеры'
 
-def test_banner(browser):
-    browser.get(URL)
+def test_screenplay1(browser):
+    browser.get(URL_SBIS)
+    main_sbis_page = MainSbisPage(browser)
+
     original_page_handler = browser.current_window_handle
-    contacts = browser.find_element(By.CSS_SELECTOR, 'a[href="/contacts"].sbisru-Header__menu-link')
+    contacts = main_sbis_page.find_contacts_sbis_page()
 
     assert contacts.text == 'Контакты', 'Unexpected text'
 
-    contacts.click()
+    main_sbis_page.go_to_contacts_sbis_page()
 
-    tensor_banner = browser.find_element(By.XPATH, '//*[@id="contacts_clients"]/div[1]/div/div/div[2]/div/a')
+    contacts_sbis_page = ContactsSbisPage(browser)
+    tensor_banner = contacts_sbis_page.find_tensor_banner()
     tensor_banner_title = tensor_banner.get_attribute('title')
 
     assert tensor_banner_title == 'tensor.ru', 'Unexpected title'
 
-    tensor_banner.click()
+    contacts_sbis_page.go_to_tensor_main_page()
 
     _switch_to_another_handler(browser, original_page_handler)
 
-    people_power = browser.find_element(By.XPATH, '//*[@id="container"]/div[1]/div/div[5]/div/div/div[1]/div/p[1]')
+    tensor_main_page = TensorMainPage(browser)
+    people_power = tensor_main_page.get_people_power()
     browser.execute_script("arguments[0].scrollIntoView();", people_power)
 
     assert people_power.text == 'Сила в людях', 'Unexpected text'
 
-    more = browser.find_element(By.XPATH, '//*[@id="container"]/div[1]/div/div[5]/div/div/div[1]/div/p[4]/a')
+    more = tensor_main_page.get_more()
     browser.execute_script("arguments[0].scrollIntoView();", more)
 
     assert more.text == 'Подробнее', 'Unexpected link text'
 
-    more.click()
+    tensor_main_page.go_to_tensor_about_page()
 
-    works = browser.find_element(By.XPATH, '//*[@id="container"]/div[1]/div/div[4]/div[1]/h2')
+    tensor_about_page = TensorAboutPage(browser)
+    works = tensor_about_page.get_works()
     browser.execute_script("arguments[0].scrollIntoView();", works)
 
     assert works.text == 'Работаем', 'Unexpected text'
