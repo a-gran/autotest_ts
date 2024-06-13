@@ -1,5 +1,5 @@
 '''
-Basic test
+Second test
 '''
 from selenium.webdriver.common.by import By
 from main_sbis_page import MainSbisPage
@@ -79,10 +79,10 @@ def test_screenplay2(browser):
 
     assert res == True, 'Unexpected title'
 
+    _switch_to_another_handler(browser)
+
     head_title = contacts_sbis_page.get_text_head_title()
-    print(head_title)
 
     res = _is_head_title(head_title)
-    print(res)
 
     assert res == True, 'Unexpected title'

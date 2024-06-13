@@ -1,5 +1,5 @@
 '''
-Basic test
+First test
 '''
 from selenium.webdriver.common.by import By
 from main_sbis_page import MainSbisPage
